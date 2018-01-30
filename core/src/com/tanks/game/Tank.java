@@ -48,7 +48,7 @@ public class Tank {
             batch.draw(textureBar, position.x, position.y + 60, 0, 0, 4, 4, currentPower/maxPower * 16, 1, 0, 12, 0, 4, 4, false, false);
         //отрисовка здоровья
         batch.setColor(1, 0, 0, 1);
-        batch.draw(textureBar, position.x, position.y + 68, 0, 0, 4, 4, hp/maxHp * 16, 1, 0, 12, 0, 4, 4, false, false);
+        batch.draw(textureBar, position.x, position.y + 64, 0, 0, 4, 4, hp/maxHp * 16, 1, 0, 12, 0, 4, 4, false, false);
         batch.setColor(1, 1, 1, 1);
     }
 
@@ -73,6 +73,8 @@ public class Tank {
         boolean spaceUp = false;
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             if (currentPower < maxPower) currentPower += deltaPower * dt;
+            else
+                currentPower = maxPower;
             spaceUp = true;
         }
 
