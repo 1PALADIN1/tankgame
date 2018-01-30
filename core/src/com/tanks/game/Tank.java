@@ -45,7 +45,11 @@ public class Tank {
 
         //отрисовка силы выстрела
         if (currentPower > minPower)
-            batch.draw(textureBar, position.x, position.y + 60, 0, 0, 4, 4, currentPower/maxPower * 16, 1, 0, 4, 0, 4, 4, false, false);
+            batch.draw(textureBar, position.x, position.y + 60, 0, 0, 4, 4, currentPower/maxPower * 16, 1, 0, 12, 0, 4, 4, false, false);
+        //отрисовка здоровья
+        batch.setColor(1, 0, 0, 1);
+        batch.draw(textureBar, position.x, position.y + 68, 0, 0, 4, 4, hp/maxHp * 16, 1, 0, 12, 0, 4, 4, false, false);
+        batch.setColor(1, 1, 1, 1);
     }
 
     public void rotateTurret(int n, float dt) {
