@@ -97,4 +97,7 @@ public class Tank {
         return false;
     }
 
+    public Vector2 getPosition() {
+        return position;
+    }
 }

@@ -66,6 +66,11 @@ public class TanksGame extends ApplicationAdapter {
 					b[i].deactivate();
 					map.clearGround(b[i].getPosition().x, b[i].getPosition().y, 12);
 				}
+
+				//проверка на столкновение с танком
+				if (b[i].checkTankCollision(player)) {
+					b[i].deactivate();
+				}
 			}
 		}
 	}
