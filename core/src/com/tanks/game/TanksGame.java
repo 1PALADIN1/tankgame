@@ -70,6 +70,7 @@ public class TanksGame extends ApplicationAdapter {
 				//проверка на столкновение с танком
 				if (b[i].checkTankCollision(player)) {
 					b[i].deactivate();
+					player.setDamage(b[i]);
 				}
 			}
 		}

@@ -7,7 +7,7 @@ public class Bullet {
     private Vector2 velocity;
     private boolean active;
     private float angle;
-    private float damage;
+    private int damage;
 
     public Vector2 getPosition() {
         return position;
@@ -26,7 +26,7 @@ public class Bullet {
         this.velocity = new Vector2(0, 0);
         this.active = false;
         this.angle = 0.0f;
-        this.damage = 15.0f;
+        this.damage = 15;
     }
 
     public void deactivate() {
@@ -50,5 +50,9 @@ public class Bullet {
         if (Math.abs(position.x - tank.getPosition().x - 32) <= (8 + 20) && Math.abs(position.y - tank.getPosition().y - 40) <= (8 + 15))
             return true;
         return false;
+    }
+
+    public int getDamage() {
+        return damage;
     }
 }
