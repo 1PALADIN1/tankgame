@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 public class TanksGame extends ApplicationAdapter {
@@ -13,6 +14,7 @@ public class TanksGame extends ApplicationAdapter {
 	private Map map;
 	private Tank player;
 	private BulletEmitter bulletEmitter;
+	private ShapeRenderer shapeRenderer;
 
 	public BulletEmitter getBulletEmitter() {
 		return bulletEmitter;
@@ -27,6 +29,8 @@ public class TanksGame extends ApplicationAdapter {
 		map = new Map();
 		player = new Tank(this, new Vector2(400, 380));
 		bulletEmitter = new BulletEmitter();
+        shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setAutoShapeType(true);
 	}
 
 	@Override
@@ -41,8 +45,14 @@ public class TanksGame extends ApplicationAdapter {
 		map.render(batch);
 		player.render(batch);
 		bulletEmitter.render(batch);
+		player.renderHUD(batch);
 
 		batch.end();
+
+		//Shape Renderer
+        shapeRenderer.begin();
+        shapeRenderer.circle(player.getHitArea().x, player.getHitArea().y, player.getHitArea().radius);
+        shapeRenderer.end();
 	}
 
 	public void update(float dt) {
@@ -62,9 +72,16 @@ public class TanksGame extends ApplicationAdapter {
 		Bullet[] b = bulletEmitter.getBullets();
 		for (int i = 0; i < b.length; i++) {
 			if(b[i].isActive()) {
-				if (map.isGround(b[i].getPosition().x, b[i].getPosition().y)) {
+				if (b[i].isArmed() && player.getHitArea().contains(b[i].getPosition())) {
+				    b[i].deactivate();
+				    player.takeDamage(5);
+                    map.clearGround(b[i].getPosition().x, b[i].getPosition().y, 12);
+                    continue;
+                }
+			    if (map.isGround(b[i].getPosition().x, b[i].getPosition().y)) {
 					b[i].deactivate();
 					map.clearGround(b[i].getPosition().x, b[i].getPosition().y, 12);
+					continue;
 				}
 			}
 		}
