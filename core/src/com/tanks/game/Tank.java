@@ -4,11 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Tank {
     private Texture textureBase;
-    private Texture textureWeapon;
+    private Texture textureTurret;
+    private Texture textureTrack;
     private Texture textureBar;
     private Vector2 position;
     private Vector2 weaponPosition;
@@ -16,6 +18,7 @@ public class Tank {
     private float turretAngle;
     private int hp;
     private int maxHp;
+    private Circle hitArea;
 
     //сила выстрела
     private float deltaPower; //увеличение силы в ед. времени
@@ -23,12 +26,17 @@ public class Tank {
     private float maxPower;
     private float currentPower;
 
+    public Circle getHitArea() {
+        return hitArea;
+    }
+
     public Tank(TanksGame game, Vector2 position) {
         this.game = game;
         this.position = position;
-        this.weaponPosition = new Vector2(position).add(20, 26);
-        this.textureBase = new Texture("tank.png");
-        this.textureWeapon = new Texture("weapon.png");
+        this.weaponPosition = new Vector2(position).add(0, 0);
+        this.textureBase = new Texture("tankBody.png");
+        this.textureTurret = new Texture("tankTurret.png");
+        this.textureTrack = new Texture("tankTrack.png");
         this.textureBar = new Texture("grass.png");
         this.turretAngle = 0.0f;
         this.maxHp = 100;
@@ -37,11 +45,13 @@ public class Tank {
         this.minPower = 200;
         this.maxPower = 600;
         this.currentPower = minPower;
+        this.hitArea = new Circle(new Vector2(0, 0), textureBase.getWidth() * 0.4f);
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(textureWeapon, weaponPosition.x, weaponPosition.y, 12, 16, 64, 32, 1, 1, turretAngle, 0, 0, 64, 32, false, false);
-        batch.draw(textureBase, position.x, position.y);
+        batch.draw(textureTurret, weaponPosition.x, weaponPosition.y, textureTurret.getWidth() / 10, textureTurret.getHeight() / 2, textureTurret.getWidth(), textureTurret.getHeight(), 1, 1, turretAngle, 0, 0, textureTurret.getWidth(), textureTurret.getHeight(), false, false);
+        batch.draw(textureTrack, position.x + 4, position.y);
+        batch.draw(textureBase, position.x, position.y + textureTrack.getHeight() / 3);
 
         //отрисовка силы выстрела
         if (currentPower > minPower)
@@ -68,8 +78,10 @@ public class Tank {
 
         if (!checkOnGroung()) {
             position.y -= TanksGame.GLOBAL_GRAVITY * dt;
-            weaponPosition.set(position).add(20, 26);
         }
+        weaponPosition.set(position).add(35, 45);
+        this.hitArea.x = position.x + textureBase.getWidth() / 2;
+        this.hitArea.y = position.y + textureBase.getHeight() / 2;
 
         //сила выстрела
         boolean spaceUp = false;
@@ -91,6 +103,12 @@ public class Tank {
         }
     }
 
+    public boolean takeDamage(int dmg) {
+        hp -= dmg;
+        if (hp <= 0) return true;
+        return false;
+    }
+
     public boolean checkOnGroung() {
         for (int i = 25; i < 75; i+=10) {
             if (game.getMap().isGround(position.x + i, position.y + 25))
@@ -103,7 +121,5 @@ public class Tank {
         return position;
     }
 
-    public void setDamage(Bullet bullet) {
-        hp -= bullet.getDamage();
-    }
+
 }
