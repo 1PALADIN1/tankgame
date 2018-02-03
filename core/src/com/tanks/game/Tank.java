@@ -73,8 +73,16 @@ public class Tank {
         turretAngle += n * 90.0f * dt;
     }
 
-    public void move() {
-
+    public void move(int n, float dt) {
+        float speed = 200.0f;
+        float dstX = position.x + speed * dt * n;
+        for (int i = 0; i < 15; i++) {
+            if (!checkOnGround(dstX, position.y + i)) {
+                position.x = dstX;
+                position.y += i - 1;
+                break;
+            }
+        }
     }
 
     public void update(float dt) {
@@ -84,8 +92,14 @@ public class Tank {
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             rotateTurret(-1, dt);
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            move(1, dt);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            move(-1, dt);
+        }
 
-        if (!checkOnGroung()) {
+        if (!checkOnGround()) {
             position.y -= TanksGame.GLOBAL_GRAVITY * dt;
         }
         weaponPosition.set(position).add(35, 45);
@@ -119,12 +133,18 @@ public class Tank {
         return false;
     }
 
-    public boolean checkOnGroung() {
-        for (int i = 25; i < 75; i+=10) {
-            if (game.getMap().isGround(position.x + i, position.y + 25))
+// C# + XNA
+    public boolean checkOnGround(float x, float y) {
+        for (int i = 0; i < textureBase.getWidth(); i += 2) {
+            if (game.getMap().isGround(x + i, y)) {
                 return true;
+            }
         }
         return false;
+    }
+
+    public boolean checkOnGround() {
+        return checkOnGround(position.x, position.y);
     }
 
     public Vector2 getPosition() {
