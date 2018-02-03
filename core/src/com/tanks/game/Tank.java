@@ -19,6 +19,7 @@ public class Tank {
     private int hp;
     private int maxHp;
     private Circle hitArea;
+    private float power;
 
     //сила выстрела
     private float deltaPower; //увеличение силы в ед. времени
@@ -41,11 +42,13 @@ public class Tank {
         this.turretAngle = 0.0f;
         this.maxHp = 100;
         this.hp = maxHp;
+        this.hitArea = new Circle(new Vector2(0, 0), textureBase.getWidth() * 0.4f);
+        this.power = 0.0f;
+
         this.deltaPower = 200;
-        this.minPower = 200;
+        this.minPower = 100;
         this.maxPower = 600;
         this.currentPower = minPower;
-        this.hitArea = new Circle(new Vector2(0, 0), textureBase.getWidth() * 0.4f);
     }
 
     public void render(SpriteBatch batch) {
@@ -55,7 +58,7 @@ public class Tank {
 
         //отрисовка силы выстрела
         if (currentPower > minPower)
-            batch.draw(textureBar, position.x, position.y + 60, 0, 0, 4, 4, (currentPower-minPower)/(maxPower-minPower) * 16, 1, 0, 12, 0, 4, 4, false, false);
+            batch.draw(textureBar, position.x, position.y + 60, 0, 0, 4, 4, (power-minPower)/(maxPower-minPower) * 16, 1, 0, 12, 0, 4, 4, false, false);
         //отрисовка здоровья
         if (hp > 0) {
             batch.setColor(1, 0, 0, 1);
@@ -83,23 +86,24 @@ public class Tank {
         this.hitArea.x = position.x + textureBase.getWidth() / 2;
         this.hitArea.y = position.y + textureBase.getHeight() / 2;
 
-        //сила выстрела
-        boolean spaceUp = false;
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            if (currentPower < maxPower) currentPower += deltaPower * dt;
-            else
-                currentPower = maxPower;
-            spaceUp = true;
-        }
+            if (power < 100.0f) {
+                power = 101.0f;
+            } else {
+                power += 200.0f * dt;
+                if (power > 2000.0f) power = 2000.0f;
+            }
+        } else {
+            if (power > 100.0f) {
+                float ammoPosX = weaponPosition.x + 12 + 28 * (float)Math.cos(Math.toRadians(turretAngle));
+                float ammoPosY = weaponPosition.y + 16 + 28 * (float)Math.sin(Math.toRadians(turretAngle));
 
-        if (currentPower > minPower && !spaceUp) {
-            float ammoPosX = weaponPosition.x + 12 + 28 * (float)Math.cos(Math.toRadians(turretAngle));
-            float ammoPosY = weaponPosition.y + 16 + 28 * (float)Math.sin(Math.toRadians(turretAngle));
-            float ammoVelX = currentPower * (float)Math.cos(Math.toRadians(turretAngle));
-            float ammoVelY = currentPower * (float)Math.sin(Math.toRadians(turretAngle));
+                float ammoVelX = power * (float)Math.cos(Math.toRadians(turretAngle));
+                float ammoVelY = power * (float)Math.sin(Math.toRadians(turretAngle));
 
-            game.getBulletEmitter().setup(ammoPosX, ammoPosY, ammoVelX, ammoVelY);
-            currentPower = minPower;
+                game.getBulletEmitter().setup(ammoPosX, ammoPosY, ammoVelX, ammoVelY);
+                power = 0.0f;
+            }
         }
     }
 
