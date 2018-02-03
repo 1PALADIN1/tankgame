@@ -21,11 +21,11 @@ public class Tank {
     private Circle hitArea;
     private float power;
     private float maxPower;
+    private float speed;
 
-    //сила выстрела
-    private float deltaPower; //увеличение силы в ед. времени
-    private float minPower;
-    private float currentPower;
+    public final static float TURRET_ROTATION_ANGULAR_SPEED = 90.0f; // скорость поворота турели
+    public final static float MINIMAL_POWER = 100.0f; // минимальная сила выстрела
+    public final static int MAX_MOVEMENT_DY = 10; // максимальная разница в высоте земли при движении
 
     public Circle getHitArea() {
         return hitArea;
@@ -45,10 +45,7 @@ public class Tank {
         this.hitArea = new Circle(new Vector2(0, 0), textureBase.getWidth() * 0.4f);
         this.power = 0.0f;
         this.maxPower = 1200.0f;
-
-        this.deltaPower = 200;
-        this.minPower = 100;
-        this.currentPower = minPower;
+        this.speed = 100.0f;
     }
 
     public void render(SpriteBatch batch) {
@@ -62,7 +59,7 @@ public class Tank {
         batch.draw(textureProgressBar, position.x + 2, position.y + 70, 0, 0, 80, 12);
         batch.setColor(0, 1, 0, 0.8f);
         batch.draw(textureProgressBar, position.x + 2, position.y + 70, 0, 0, (int) (80 * (float) hp / maxHp), 12);
-        if (power > 100) {
+        if (power > MINIMAL_POWER) {
             batch.setColor(1, 0, 0, 0.8f);
             batch.draw(textureProgressBar, position.x + 2, position.y + 82, 0, 0, (int) (80 * power / maxPower), 12);
         }
@@ -70,13 +67,12 @@ public class Tank {
     }
 
     public void rotateTurret(int n, float dt) {
-        turretAngle += n * 90.0f * dt;
+        turretAngle += n * TURRET_ROTATION_ANGULAR_SPEED * dt;
     }
 
     public void move(int n, float dt) {
-        float speed = 200.0f;
         float dstX = position.x + speed * dt * n;
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < MAX_MOVEMENT_DY; i++) {
             if (!checkOnGround(dstX, position.y + i)) {
                 position.x = dstX;
                 position.y += i - 1;
@@ -107,14 +103,14 @@ public class Tank {
         this.hitArea.y = position.y + textureBase.getHeight() / 2;
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            if (power < 100.0f) {
-                power = 101.0f;
+            if (power < MINIMAL_POWER) {
+                power = MINIMAL_POWER + 1.0f;
             } else {
                 power += 600.0f * dt;
                 if (power > maxPower) power = maxPower;
             }
         } else {
-            if (power > 100.0f) {
+            if (power > MINIMAL_POWER) {
                 float ammoPosX = weaponPosition.x + 12 + 28 * (float)Math.cos(Math.toRadians(turretAngle));
                 float ammoPosY = weaponPosition.y + 16 + 28 * (float)Math.sin(Math.toRadians(turretAngle));
 
