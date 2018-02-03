@@ -11,7 +11,7 @@ public class Tank {
     private Texture textureBase;
     private Texture textureTurret;
     private Texture textureTrack;
-    private Texture textureBar;
+    private Texture textureProgressBar;
     private Vector2 position;
     private Vector2 weaponPosition;
     private TanksGame game;
@@ -20,11 +20,11 @@ public class Tank {
     private int maxHp;
     private Circle hitArea;
     private float power;
+    private float maxPower;
 
     //сила выстрела
     private float deltaPower; //увеличение силы в ед. времени
     private float minPower;
-    private float maxPower;
     private float currentPower;
 
     public Circle getHitArea() {
@@ -38,16 +38,16 @@ public class Tank {
         this.textureBase = new Texture("tankBody.png");
         this.textureTurret = new Texture("tankTurret.png");
         this.textureTrack = new Texture("tankTrack.png");
-        this.textureBar = new Texture("grass.png");
+        this.textureProgressBar = new Texture("hbar.png");
         this.turretAngle = 0.0f;
         this.maxHp = 100;
         this.hp = maxHp;
         this.hitArea = new Circle(new Vector2(0, 0), textureBase.getWidth() * 0.4f);
         this.power = 0.0f;
+        this.maxPower = 1200.0f;
 
         this.deltaPower = 200;
         this.minPower = 100;
-        this.maxPower = 600;
         this.currentPower = minPower;
     }
 
@@ -55,20 +55,26 @@ public class Tank {
         batch.draw(textureTurret, weaponPosition.x, weaponPosition.y, textureTurret.getWidth() / 10, textureTurret.getHeight() / 2, textureTurret.getWidth(), textureTurret.getHeight(), 1, 1, turretAngle, 0, 0, textureTurret.getWidth(), textureTurret.getHeight(), false, false);
         batch.draw(textureTrack, position.x + 4, position.y);
         batch.draw(textureBase, position.x, position.y + textureTrack.getHeight() / 3);
+    }
 
-        //отрисовка силы выстрела
-        if (currentPower > minPower)
-            batch.draw(textureBar, position.x, position.y + 60, 0, 0, 4, 4, (power-minPower)/(maxPower-minPower) * 16, 1, 0, 12, 0, 4, 4, false, false);
-        //отрисовка здоровья
-        if (hp > 0) {
-            batch.setColor(1, 0, 0, 1);
-            batch.draw(textureBar, position.x, position.y + 64, 0, 0, 4, 4, (float) hp / maxHp * 16, 1, 0, 12, 0, 4, 4, false, false);
-            batch.setColor(1, 1, 1, 1);
+    public void renderHUD(SpriteBatch batch) {
+        batch.setColor(0.8f, 0, 0, 0.8f);
+        batch.draw(textureProgressBar, position.x + 2, position.y + 70, 0, 0, 80, 12);
+        batch.setColor(0, 1, 0, 0.8f);
+        batch.draw(textureProgressBar, position.x + 2, position.y + 70, 0, 0, (int) (80 * (float) hp / maxHp), 12);
+        if (power > 100) {
+            batch.setColor(1, 0, 0, 0.8f);
+            batch.draw(textureProgressBar, position.x + 2, position.y + 82, 0, 0, (int) (80 * power / maxPower), 12);
         }
+        batch.setColor(1, 1, 1, 1);
     }
 
     public void rotateTurret(int n, float dt) {
         turretAngle += n * 90.0f * dt;
+    }
+
+    public void move() {
+
     }
 
     public void update(float dt) {
@@ -90,8 +96,8 @@ public class Tank {
             if (power < 100.0f) {
                 power = 101.0f;
             } else {
-                power += 200.0f * dt;
-                if (power > 2000.0f) power = 2000.0f;
+                power += 600.0f * dt;
+                if (power > maxPower) power = maxPower;
             }
         } else {
             if (power > 100.0f) {

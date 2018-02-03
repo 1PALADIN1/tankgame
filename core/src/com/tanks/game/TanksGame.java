@@ -45,6 +45,7 @@ public class TanksGame extends ApplicationAdapter {
 		map.render(batch);
 		player.render(batch);
 		bulletEmitter.render(batch);
+		player.renderHUD(batch);
 
 		batch.end();
 

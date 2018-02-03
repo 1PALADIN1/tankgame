@@ -58,8 +58,4 @@ public class Bullet {
             return true;
         return false;
     }
-
-    public int getDamage() {
-        return damage;
-    }
 }
