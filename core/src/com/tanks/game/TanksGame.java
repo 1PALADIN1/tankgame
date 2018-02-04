@@ -124,6 +124,11 @@ public class TanksGame extends ApplicationAdapter {
 					map.clearGround(b[i].getPosition().x, b[i].getPosition().y, 8);
 					continue;
 				}
+				//фикс с вылетом за экран
+				if (b[i].getPosition().x > 1280 || b[i].getPosition().x < 0 ||
+						b[i].getPosition().y > 720 || b[i].getPosition().y < 0) {
+					b[i].deactivate();
+				}
 			}
 		}
 	}
