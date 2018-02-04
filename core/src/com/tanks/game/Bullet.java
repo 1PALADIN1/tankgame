@@ -2,13 +2,14 @@ package com.tanks.game;
 
 import com.badlogic.gdx.math.Vector2;
 
+import java.io.BufferedOutputStream;
+
 public class Bullet {
     private Vector2 position;
     private Vector2 velocity;
     private boolean active;
     private float angle;
     private float time;
-    private int damage;
 
     public Vector2 getPosition() {
         return position;
@@ -23,15 +24,15 @@ public class Bullet {
     }
 
     public boolean isArmed() {
-        return time > 0.5f;
+        return time > 0.2f;
     }
 
     public Bullet() {
-        this.position = new Vector2(0, 0);
-        this.velocity = new Vector2(0, 0);
-        this.active = false;
-        this.angle = 0.0f;
-        this.damage = 15;
+        position = new Vector2(0, 0);
+        velocity = new Vector2(0, 0);
+        active = false;
+        angle = 0.0f;
+        time = 0.0f;
     }
 
     public void deactivate() {
@@ -46,16 +47,9 @@ public class Bullet {
     }
 
     public void update(float dt) {
-        time += dt; //сколько летит по вермени
+        time += dt;
         velocity.y -= TanksGame.GLOBAL_GRAVITY * dt;
         angle = velocity.angle();
         position.mulAdd(velocity, dt);
-    }
-
-    //проверка на столкновение с танком
-    public boolean checkTankCollision(Tank tank) {
-        if (Math.abs(position.x - tank.getPosition().x - 32) <= (8 + 20) && Math.abs(position.y - tank.getPosition().y - 40) <= (8 + 15))
-            return true;
-        return false;
     }
 }

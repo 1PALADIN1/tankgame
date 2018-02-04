@@ -19,17 +19,28 @@ public class BulletEmitter {
         }
     }
 
+    public boolean empty() {
+        for (int i = 0; i < bullets.length; i++) {
+            if (bullets[i].isActive()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void render(SpriteBatch batch) {
         for (int i = 0; i < bullets.length; i++) {
-            if (bullets[i].isActive())
+            if (bullets[i].isActive()) {
                 batch.draw(bulletTexture, bullets[i].getPosition().x - 8, bullets[i].getPosition().y - 8);
+            }
         }
     }
 
     public void update(float dt) {
         for (int i = 0; i < bullets.length; i++) {
-            if (bullets[i].isActive())
+            if (bullets[i].isActive()) {
                 bullets[i].update(dt);
+            }
         }
     }
 
