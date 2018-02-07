@@ -36,7 +36,7 @@ public class Assets {
     public void loadAssets(ScreenManager.ScreenType type) {
         switch (type) {
             case MENU:
-                assetManager.load("mainPack.pack", TextureAtlas.class);
+                assetManager.load("MainPack.pack", TextureAtlas.class);
                 createStandardFont(48);
                 assetManager.finishLoading();
                 atlas = assetManager.get("MainPack.pack", TextureAtlas.class);

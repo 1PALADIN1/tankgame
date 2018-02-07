@@ -22,7 +22,7 @@ public class TanksGame extends Game {
 	public void create() {
 		batch = new SpriteBatch();
 		ScreenManager.getInstance().init(this, batch);
-		ScreenManager.getInstance().switchScreen(ScreenManager.ScreenType.GAME);
+		ScreenManager.getInstance().switchScreen(ScreenManager.ScreenType.MENU);
 	}
 
 
