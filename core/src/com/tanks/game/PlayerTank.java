@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
 public class PlayerTank extends Tank {
-    public PlayerTank(TanksGame game, Vector2 position) {
+    public PlayerTank(GameScreen game, Vector2 position) {
         super(game, position);
     }
 

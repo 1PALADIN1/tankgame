@@ -3,18 +3,20 @@ package com.tanks.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class Tank {
-    protected Texture textureBase;
-    protected Texture textureTurret;
-    protected Texture textureTrack;
-    protected Texture textureProgressBar;
+    protected TextureRegion textureBase;
+    protected TextureRegion textureTurret;
+    protected TextureRegion textureTrack;
+    protected TextureRegion textureProgressBar;
     protected Vector2 position;
     protected Vector2 weaponPosition;
-    protected TanksGame game;
+    protected GameScreen game;
     protected float turretAngle;
     protected int hp;
     protected int maxHp;
@@ -51,21 +53,23 @@ public abstract class Tank {
         fuel = 0.8f;
     }
 
-    public Tank(TanksGame game, Vector2 position) {
+    public Tank(GameScreen game, Vector2 position) {
         this.game = game;
         this.position = position;
         this.weaponPosition = new Vector2(position).add(0, 0);
-        this.textureBase = new Texture("tankBody.png");
-        this.textureTurret = new Texture("tankTurret.png");
-        this.textureTrack = new Texture("tankTrack.png");
-        this.textureProgressBar = new Texture("hbar.png");
+
+        this.textureBase = Assets.getInstance().getAtlas().findRegion("tankBody");
+        this.textureTurret = Assets.getInstance().getAtlas().findRegion("tankTurret");
+        this.textureTrack = Assets.getInstance().getAtlas().findRegion("tankTrack");
+        this.textureProgressBar = new TextureRegion(Assets.getInstance().getAtlas().findRegion("hbar"), 0, 0, 80, 12);
         this.turretAngle = 0.0f;
         this.maxHp = 100;
         this.hp = this.maxHp;
-        this.hitArea = new Circle(new Vector2(0, 0), textureBase.getWidth() * 0.4f);
+        this.hitArea = new Circle(new Vector2(0, 0), textureBase.getRegionWidth() * 0.4f);
         this.power = 0.0f;
         this.maxPower = 1200.0f;
         this.speed = 100.0f;
+        this.makeTurn = true;
     }
 
     public void render(SpriteBatch batch) {
@@ -75,21 +79,23 @@ public abstract class Tank {
         } else {
             batch.setColor(1, 1, 1, 1);
         }
-        batch.draw(textureTurret, weaponPosition.x, weaponPosition.y, textureTurret.getWidth() / 10, textureTurret.getHeight() / 2, textureTurret.getWidth(), textureTurret.getHeight(), 1, 1, turretAngle, 0, 0, textureTurret.getWidth(), textureTurret.getHeight(), false, false);
+        batch.draw(textureTurret, weaponPosition.x, weaponPosition.y, textureTurret.getRegionWidth() / 10, textureTurret.getRegionHeight() / 2, textureTurret.getRegionWidth(), textureTurret.getRegionHeight(), 1, 1, turretAngle);
         batch.draw(textureTrack, position.x + 4, position.y);
-        batch.draw(textureBase, position.x, position.y + textureTrack.getHeight() / 3);
+        batch.draw(textureBase, position.x, position.y + textureTrack.getRegionHeight() / 3);
         batch.setColor(1, 1, 1, 1);
     }
 
-    public void renderHUD(SpriteBatch batch) {
+    public void renderHUD(SpriteBatch batch, BitmapFont font) {
         batch.setColor(0.5f, 0, 0, 0.8f);
-        batch.draw(textureProgressBar, position.x + 2, position.y + 70, 0, 0, 80, 12);
+        batch.draw(textureProgressBar, position.x + 2, position.y + 70);
         batch.setColor(0, 1, 0, 0.8f);
-        batch.draw(textureProgressBar, position.x + 2, position.y + 70, 0, 0, (int) (80 * (float) hp / maxHp), 12);
+        batch.draw(textureProgressBar, position.x + 2, position.y + 70, (int) (80 * (float) hp / maxHp), 12);
+
+        font.draw(batch, hp + "/" + maxHp, position.x, position.y + 80, 85, 1, false);
 
         if (power > 100.0f) {
             batch.setColor(1, 0, 0, 0.8f);
-            batch.draw(textureProgressBar, position.x + 2, position.y + 82, 0, 0, (int) (80 * power / maxPower), 12);
+            batch.draw(textureProgressBar, position.x + 2, position.y + 82, (int) (80 * power / maxPower), 12);
         }
         batch.setColor(1, 1, 1, 1);
     }
@@ -117,8 +123,8 @@ public abstract class Tank {
             position.y -= 100.0f * dt;
         }
         this.weaponPosition.set(position).add(34, 45);
-        this.hitArea.x = position.x + textureBase.getWidth() / 2;
-        this.hitArea.y = position.y + textureBase.getHeight() / 2;
+        this.hitArea.x = position.x + textureBase.getRegionWidth() / 2;
+        this.hitArea.y = position.y + textureBase.getRegionHeight() / 2;
         this.time += dt;
     }
 
@@ -129,9 +135,10 @@ public abstract class Tank {
         }
         return false;
     }
+
     // C# + XNA
     public boolean checkOnGround(float x, float y) {
-        for (int i = 0; i < textureBase.getWidth(); i += 2) {
+        for (int i = 0; i < textureBase.getRegionWidth(); i += 2) {
             if (game.getMap().isGround(x + i, y)) {
                 return true;
             }

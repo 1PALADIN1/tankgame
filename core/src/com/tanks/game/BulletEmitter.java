@@ -2,9 +2,10 @@ package com.tanks.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class BulletEmitter {
-    private Texture bulletTexture;
+    private TextureRegion bulletTexture;
     private Bullet[] bullets;
 
     public Bullet[] getBullets() {
@@ -12,8 +13,8 @@ public class BulletEmitter {
     }
 
     public BulletEmitter() {
-        bulletTexture = new Texture("ammo.png");
-        bullets = new Bullet[50];
+        bulletTexture = Assets.getInstance().getAtlas().findRegion("ammo");
+        bullets = new Bullet[250];
         for (int i = 0; i < bullets.length; i++) {
             bullets[i] = new Bullet();
         }
@@ -44,12 +45,13 @@ public class BulletEmitter {
         }
     }
 
-    public void setup(float x, float y, float vx, float vy) {
+    public Bullet setup(float x, float y, float vx, float vy) {
         for (int i = 0; i < bullets.length; i++) {
             if (!bullets[i].isActive()) {
                 bullets[i].activate(x, y, vx, vy);
-                break;
+                return bullets[i];
             }
         }
+        return null;
     }
 }

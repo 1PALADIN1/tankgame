@@ -48,7 +48,7 @@ public class Bullet {
 
     public void update(float dt) {
         time += dt;
-        velocity.y -= TanksGame.GLOBAL_GRAVITY * dt;
+        velocity.y -= GameScreen.GLOBAL_GRAVITY * dt;
         angle = velocity.angle();
         position.mulAdd(velocity, dt);
     }
