@@ -165,11 +165,18 @@ public abstract class Tank {
         }
     }
 
-    public boolean takeDamage(int dmg) {
+    public boolean takeDamage(int dmg, Vector2 bulletPosition, float dt) {
         drawDamage = dmg;
         showDamage = true;
         hp -= dmg;
         reddish += 1.0f;
+
+        //откат танка
+        if (bulletPosition.x < position.x + textureBase.getRegionWidth() / 2)
+            move(2, dt);
+        else
+            move(-2, dt);
+
         if (hp <= 0) {
             return true;
         }
