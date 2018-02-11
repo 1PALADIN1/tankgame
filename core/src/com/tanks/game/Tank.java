@@ -104,7 +104,7 @@ public abstract class Tank {
 
         //отрисовка урона
         if (showDamage) {
-            font12.draw(batch, String.valueOf((int)-drawDamage),position.x + 35, position.y + 90 + drawDamageOffset);
+            font12.draw(batch, String.valueOf((int)-drawDamage),position.x + textureBase.getRegionWidth() / 2, position.y + 90 + drawDamageOffset);
         }
     }
 
