@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class TanksGame extends Game {
 	private SpriteBatch batch;
-	
+
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
