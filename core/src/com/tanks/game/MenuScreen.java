@@ -1,30 +1,31 @@
 package com.tanks.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.RegionInfluencer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MenuScreen implements Screen {
     private SpriteBatch batch;
-    private TextureRegion textureBackground;
-    private BitmapFont font;
 
-    public void update(float dt) {
-        //обработка нажатия мыши на область
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            //начать игру
-            if (Gdx.input.getX() < 400 && Gdx.input.getX() > 100 && Gdx.input.getY() > 450 && Gdx.input.getY() < 500)
-                ScreenManager.getInstance().switchScreen(ScreenManager.ScreenType.GAME);
-            //выйти из игры
-            if (Gdx.input.getX() < 400 && Gdx.input.getX() > 100 && Gdx.input.getY() > 560 && Gdx.input.getY() < 600)
-                Gdx.app.exit();
-        }
-    }
+    private BitmapFont font32;
+    private BitmapFont font96;
+
+    private TextureRegion textureRegionBackground;
+
+    private Stage stage;
+    private Skin skin;
 
     public MenuScreen(SpriteBatch batch) {
         this.batch = batch;
@@ -32,22 +33,53 @@ public class MenuScreen implements Screen {
 
     @Override
     public void show() {
-        font = Assets.getInstance().getAssetManager().get("zorque48.ttf", BitmapFont.class);
-        textureBackground = Assets.getInstance().getAtlas().findRegion("background");
+        textureRegionBackground = Assets.getInstance().getAtlas().findRegion("background");
+        font32 = Assets.getInstance().getAssetManager().get("zorque32.ttf", BitmapFont.class);
+        font96 = Assets.getInstance().getAssetManager().get("zorque96.ttf", BitmapFont.class);
+        createGUI();
+    }
+
+    public void createGUI() {
+        stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
+        skin = new Skin(Assets.getInstance().getAtlas());
+        Gdx.input.setInputProcessor(stage);
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = skin.getDrawable("menuBtn");
+        textButtonStyle.font = font32;
+        skin.add("tbs", textButtonStyle);
+
+        TextButton btnNewGame = new TextButton("START", skin, "tbs");
+        TextButton btnExitGame = new TextButton("EXIT", skin, "tbs");
+        btnNewGame.setPosition(520, 120);
+        btnExitGame.setPosition(520, 20);
+        stage.addActor(btnNewGame);
+        stage.addActor(btnExitGame);
+        btnNewGame.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                ScreenManager.getInstance().switchScreen(ScreenManager.ScreenType.GAME);
+            }
+        });
+        btnExitGame.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                Gdx.app.exit();
+            }
+        });
     }
 
     @Override
     public void render(float delta) {
         update(delta);
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-
-        batch.draw(textureBackground, 0, 0);
-        font.draw(batch, "START GAME", 100, 250);
-        font.draw(batch, "EXIT", 100, 150);
-
+        batch.draw(textureRegionBackground, 0, 0);
+        font96.draw(batch, "Tanks Game", 0, 320, 1280, 1, false);
         batch.end();
+        stage.draw();
+    }
+
+    public void update(float dt) {
+        stage.act(dt);
     }
 
     @Override
@@ -57,21 +89,19 @@ public class MenuScreen implements Screen {
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override
     public void dispose() {
-        //batch.dispose();
+        skin.dispose();
+        stage.dispose();
     }
 }
