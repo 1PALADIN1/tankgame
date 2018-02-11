@@ -11,6 +11,10 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 
+/**
+ * Created by FlameXander on 09.01.2018.
+ */
+
 public class Assets {
     private static final Assets ourInstance = new Assets();
 
@@ -36,15 +40,16 @@ public class Assets {
     public void loadAssets(ScreenManager.ScreenType type) {
         switch (type) {
             case MENU:
+                createStandardFont(32);
+                createStandardFont(96);
                 assetManager.load("MainPack.pack", TextureAtlas.class);
-                createStandardFont(48);
                 assetManager.finishLoading();
                 atlas = assetManager.get("MainPack.pack", TextureAtlas.class);
-//                assetManager.load("background.png", Texture.class);
                 break;
             case GAME:
                 assetManager.load("MainPack.pack", TextureAtlas.class);
                 createStandardFont(12);
+                createStandardFont(32);
                 assetManager.finishLoading();
                 atlas = assetManager.get("MainPack.pack", TextureAtlas.class);
                 break;
