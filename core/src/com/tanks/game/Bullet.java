@@ -2,9 +2,10 @@ package com.tanks.game;
 
 import com.badlogic.gdx.math.Vector2;
 
+
 import java.io.BufferedOutputStream;
 
-public class Bullet {
+public class Bullet implements Poolable {
     private Vector2 position;
     private Vector2 velocity;
     private boolean active;
@@ -15,6 +16,7 @@ public class Bullet {
         return position;
     }
 
+    @Override
     public boolean isActive() {
         return active;
     }

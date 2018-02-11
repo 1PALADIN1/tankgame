@@ -46,6 +46,8 @@ public class AiTank extends Tank {
                 } while (!ready && tmpBullet.isActive());
             } while (!ready);
 
+            game.getBulletEmitter().checkPool();
+
             turretAngle = tmpAngle + MathUtils.random(-TARGETING_POWER_ANGLE / 2, TARGETING_POWER_ANGLE / 2);
             tmpPower = tmpPower + MathUtils.random(-TARGETING_POWER_ERROR / 2, TARGETING_POWER_ERROR / 2);
 
@@ -54,8 +56,6 @@ public class AiTank extends Tank {
 
             float ammoVelX = tmpPower * (float) Math.cos(Math.toRadians(turretAngle));
             float ammoVelY = tmpPower * (float) Math.sin(Math.toRadians(turretAngle));
-
-
 
             game.getBulletEmitter().setup(ammoPosX, ammoPosY, ammoVelX, ammoVelY);
             makeTurn = true;
