@@ -1,8 +1,5 @@
 package com.tanks.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -29,6 +26,11 @@ public abstract class Tank {
     protected float fuel;
     protected float time;
     protected float reddish;
+
+    private float drawDamage;
+    private float drawDamageOffset;
+    private boolean showDamage;
+    private BitmapFont font12;
 
     public boolean isMakeTurn() {
         return makeTurn;
@@ -73,6 +75,11 @@ public abstract class Tank {
         this.speed = 100.0f;
         this.makeTurn = true;
         this.reddish = 0.0f;
+
+        this.drawDamage = 0.0f;
+        this.showDamage = false;
+        this.font12 = Assets.getInstance().getAssetManager().get("zorque12.ttf", BitmapFont.class);
+        this.drawDamageOffset = 0.0f;
     }
 
     public void render(SpriteBatch batch) {
@@ -94,6 +101,11 @@ public abstract class Tank {
 
         batch.draw(textureBase, position.x, position.y + textureTrack.getRegionHeight() / 3 + t);
         batch.setColor(1, 1, 1, 1);
+
+        //отрисовка урона
+        if (showDamage) {
+            font12.draw(batch, String.valueOf((int)-drawDamage),position.x + 35, position.y + 90 + drawDamageOffset);
+        }
     }
 
     public void renderHUD(SpriteBatch batch, BitmapFont font) {
@@ -142,9 +154,20 @@ public abstract class Tank {
         this.hitArea.x = position.x + textureBase.getRegionWidth() / 2;
         this.hitArea.y = position.y + textureBase.getRegionHeight() / 2;
         this.time += dt;
+
+        if (showDamage) {
+            drawDamageOffset += 20*dt;
+            //поднимаемся вверх на 20px
+            if (drawDamageOffset >= 20) {
+                showDamage = false;
+                drawDamageOffset = 0.0f;
+            }
+        }
     }
 
     public boolean takeDamage(int dmg) {
+        drawDamage = dmg;
+        showDamage = true;
         hp -= dmg;
         reddish += 1.0f;
         if (hp <= 0) {
