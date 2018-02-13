@@ -212,18 +212,18 @@ public class GameScreen implements Screen {
             players.get(i).update(dt);
         }
         bulletEmitter.update(dt);
-        checkCollisions();
+        checkCollisions(dt);
         checkNextTurn();
         bulletEmitter.checkPool();
     }
 
-    public void checkCollisions() {
+    public void checkCollisions(float dt) {
         List<Bullet> b = bulletEmitter.getActiveList();
         for (int i = 0; i < b.size(); i++) {
             for (int j = 0; j < players.size(); j++) {
                 if (b.get(i).isArmed() && players.get(j).getHitArea().contains(b.get(i).getPosition())) {
                     b.get(i).deactivate();
-                    players.get(j).takeDamage(5);
+                    players.get(j).takeDamage(5, b.get(i).getPosition(), dt);
                     map.clearGround(b.get(i).getPosition().x, b.get(i).getPosition().y, 8);
                     continue;
                 }
