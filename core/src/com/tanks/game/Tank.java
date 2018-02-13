@@ -1,5 +1,9 @@
 package com.tanks.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -11,7 +15,10 @@ public abstract class Tank {
     protected TextureRegion textureBase;
     protected TextureRegion textureTurret;
     protected TextureRegion textureTrack;
-    protected TextureRegion textureProgressBar;
+    protected TextureRegion hudBarBack;
+    protected TextureRegion hudBarPower;
+    protected TextureRegion hudBarHp;
+
     protected Vector2 position;
     protected Vector2 weaponPosition;
     protected GameScreen game;
@@ -26,11 +33,6 @@ public abstract class Tank {
     protected float fuel;
     protected float time;
     protected float reddish;
-
-    private float drawDamage;
-    private float drawDamageOffset;
-    private boolean showDamage;
-    private BitmapFont font12;
 
     public boolean isMakeTurn() {
         return makeTurn;
@@ -65,7 +67,9 @@ public abstract class Tank {
         this.textureBase = Assets.getInstance().getAtlas().findRegion("tankBody");
         this.textureTurret = Assets.getInstance().getAtlas().findRegion("tankTurret");
         this.textureTrack = Assets.getInstance().getAtlas().findRegion("tankTrack");
-        this.textureProgressBar = new TextureRegion(Assets.getInstance().getAtlas().findRegion("hbar"), 0, 0, 80, 12);
+        this.hudBarBack = new TextureRegion(Assets.getInstance().getAtlas().findRegion("bars"), 0, 0, 80, 24);
+        this.hudBarHp = new TextureRegion(Assets.getInstance().getAtlas().findRegion("bars"), 0, 24, 80, 24);
+        this.hudBarPower = new TextureRegion(Assets.getInstance().getAtlas().findRegion("bars"), 0, 48, 80, 24);
         this.turretAngle = 0.0f;
         this.maxHp = 100;
         this.hp = this.maxHp;
@@ -75,11 +79,6 @@ public abstract class Tank {
         this.speed = 100.0f;
         this.makeTurn = true;
         this.reddish = 0.0f;
-
-        this.drawDamage = 0.0f;
-        this.showDamage = false;
-        this.font12 = Assets.getInstance().getAssetManager().get("zorque12.ttf", BitmapFont.class);
-        this.drawDamageOffset = 0.0f;
     }
 
     public void render(SpriteBatch batch) {
@@ -101,26 +100,21 @@ public abstract class Tank {
 
         batch.draw(textureBase, position.x, position.y + textureTrack.getRegionHeight() / 3 + t);
         batch.setColor(1, 1, 1, 1);
-
-        //отрисовка урона
-        if (showDamage) {
-            font12.draw(batch, String.valueOf((int)-drawDamage),position.x + textureBase.getRegionWidth() / 2, position.y + 90 + drawDamageOffset);
-        }
     }
 
     public void renderHUD(SpriteBatch batch, BitmapFont font) {
-        batch.setColor(0.5f, 0, 0, 0.8f);
-        batch.draw(textureProgressBar, position.x + 2, position.y + 70);
-        batch.setColor(0, 1, 0, 0.8f);
-        batch.draw(textureProgressBar, position.x + 2, position.y + 70, (int) (80 * (float) hp / maxHp), 12);
+        //batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        batch.draw(hudBarBack, position.x + 2, position.y + 80, 80, 24);
+        batch.draw(hudBarHp, position.x + 2, position.y + 80, (int) (80 * (float) hp / maxHp), 24);
 
-        font.draw(batch, hp + "/" + maxHp, position.x, position.y + 80, 85, 1, false);
-
+        //batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+        //batch.draw(hudBarHp, position.x + 2 + MathUtils.random(-reddish * 3, reddish * 3), position.y + 70 + MathUtils.random(-reddish * 3, reddish * 3), (int) (80 * (float) hp / maxHp), 24);
+        //batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        font.draw(batch, "" + hp, position.x, position.y + 100, 85, 1, false);
         if (power > 100.0f) {
-            batch.setColor(1, 0, 0, 0.8f);
-            batch.draw(textureProgressBar, position.x + 2, position.y + 82, (int) (80 * power / maxPower), 12);
+            batch.draw(hudBarBack, position.x + 2, position.y + 104, 80, 24);
+            batch.draw(hudBarPower, position.x + 2, position.y + 104, (int) (80 * power / maxPower), 24);
         }
-        batch.setColor(1, 1, 1, 1);
     }
 
     public void rotateTurret(int n, float dt) {
@@ -154,29 +148,11 @@ public abstract class Tank {
         this.hitArea.x = position.x + textureBase.getRegionWidth() / 2;
         this.hitArea.y = position.y + textureBase.getRegionHeight() / 2;
         this.time += dt;
-
-        if (showDamage) {
-            drawDamageOffset += 20*dt;
-            //поднимаемся вверх на 20px
-            if (drawDamageOffset >= 20) {
-                showDamage = false;
-                drawDamageOffset = 0.0f;
-            }
-        }
     }
 
-    public boolean takeDamage(int dmg, Vector2 bulletPosition, float dt) {
-        drawDamage = dmg;
-        showDamage = true;
+    public boolean takeDamage(int dmg) {
         hp -= dmg;
         reddish += 1.0f;
-
-        //откат танка
-        if (bulletPosition.x < position.x + textureBase.getRegionWidth() / 2)
-            move(2, dt);
-        else
-            move(-2, dt);
-
         if (hp <= 0) {
             return true;
         }

@@ -2,15 +2,21 @@ package com.tanks.game;
 
 import com.badlogic.gdx.math.Vector2;
 
-
-import java.io.BufferedOutputStream;
-
 public class Bullet implements Poolable {
     private Vector2 position;
     private Vector2 velocity;
     private boolean active;
-    private float angle;
     private float time;
+    private boolean gravity;
+    private boolean bouncing;
+
+    public boolean isGravity() {
+        return gravity;
+    }
+
+    public boolean isBouncing() {
+        return bouncing;
+    }
 
     public Vector2 getPosition() {
         return position;
@@ -21,8 +27,8 @@ public class Bullet implements Poolable {
         return active;
     }
 
-    public float getAngle() {
-        return angle;
+    public Vector2 getVelocity() {
+        return velocity;
     }
 
     public boolean isArmed() {
@@ -33,25 +39,25 @@ public class Bullet implements Poolable {
         position = new Vector2(0, 0);
         velocity = new Vector2(0, 0);
         active = false;
-        angle = 0.0f;
         time = 0.0f;
+        gravity = false;
+        bouncing = false;
     }
 
     public void deactivate() {
         active = false;
     }
 
-    public void activate(float x, float y, float vx, float vy) {
+    public void activate(float x, float y, float vx, float vy, boolean gravity, boolean bouncing) {
         position.set(x, y);
         velocity.set(vx, vy);
         active = true;
         time = 0.0f;
+        this.gravity = gravity;
+        this.bouncing = bouncing;
     }
 
-    public void update(float dt) {
+    public void addTime(float dt) {
         time += dt;
-        velocity.y -= GameScreen.GLOBAL_GRAVITY * dt;
-        angle = velocity.angle();
-        position.mulAdd(velocity, dt);
     }
 }

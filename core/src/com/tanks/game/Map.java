@@ -15,7 +15,7 @@ public class Map {
     private static final int HEIGHT = 720 / CELL_SIZE;
 
     public Map() {
-        this.textureGround = new TextureRegion(Assets.getInstance().getAtlas().findRegion("grass"), 8,0,CELL_SIZE,CELL_SIZE);
+        this.textureGround = new TextureRegion(Assets.getInstance().getAtlas().findRegion("grass"));
         this.data = new byte[WIDTH][HEIGHT];
         this.color = new float[WIDTH][HEIGHT];
         this.generate();
@@ -25,7 +25,7 @@ public class Map {
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT / 2; j++) {
                 data[i][j] = 1;
-                color[i][j] = ((float)j / (HEIGHT / 2));
+                color[i][j] = ((float)j / (HEIGHT / 2)) / 2f;
             }
         }
     }
@@ -34,8 +34,8 @@ public class Map {
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
                 if (data[i][j] == 1) {
-                    batch.setColor(0, color[i][j] / 2, 0, 1);
-                    batch.draw(textureGround, i * CELL_SIZE, j * CELL_SIZE);
+                    batch.setColor(0, color[i][j], 0, 1);
+                    batch.draw(textureGround, i * CELL_SIZE, j * CELL_SIZE, CELL_SIZE, CELL_SIZE);
                 }
             }
         }

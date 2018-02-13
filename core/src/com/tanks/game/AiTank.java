@@ -6,8 +6,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class AiTank extends Tank {
-    private static final float TARGETING_POWER_ERROR = 150.0f;
-    private static final float TARGETING_POWER_ANGLE = 20.0f;
+    //    private static final float TARGETING_POWER_ERROR = 150.0f;
+//    private static final float TARGETING_POWER_ANGLE = 20.0f;
+    private static final float TARGETING_POWER_ERROR = 10.0f;
+    private static final float TARGETING_POWER_ANGLE = 2.0f;
 
     public AiTank(GameScreen game, Vector2 position) {
         super(game, position);
@@ -39,7 +41,7 @@ public class AiTank extends Tank {
                 float ammoVelX = tmpPower * (float) Math.cos(Math.toRadians(tmpAngle));
                 float ammoVelY = tmpPower * (float) Math.sin(Math.toRadians(tmpAngle));
 
-                Bullet tmpBullet = game.getBulletEmitter().setup(ammoPosX, ammoPosY, ammoVelX, ammoVelY);
+                Bullet tmpBullet = game.getBulletEmitter().setup(ammoPosX, ammoPosY, ammoVelX, ammoVelY, true, true);
 
                 do {
                     ready = game.traceCollision(aim, tmpBullet, dt);
@@ -57,7 +59,7 @@ public class AiTank extends Tank {
             float ammoVelX = tmpPower * (float) Math.cos(Math.toRadians(turretAngle));
             float ammoVelY = tmpPower * (float) Math.sin(Math.toRadians(turretAngle));
 
-            game.getBulletEmitter().setup(ammoPosX, ammoPosY, ammoVelX, ammoVelY);
+            game.getBulletEmitter().setup(ammoPosX, ammoPosY, ammoVelX, ammoVelY, true, true);
             makeTurn = true;
             power = 0.0f;
         }
