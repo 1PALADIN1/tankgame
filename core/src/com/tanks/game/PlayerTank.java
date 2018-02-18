@@ -4,10 +4,11 @@ import com.badlogic.gdx.math.Vector2;
 
 public class PlayerTank extends Tank {
     public enum Action {
-        IDLE, MOVE_LEFT, MOVE_RIGHT, TURRET_UP, TURRET_DOWN, FIRE
+        IDLE, MOVE_LEFT, MOVE_RIGHT, TURRET_UP, TURRET_DOWN, FIRE, CHANGE_WEAPON
     }
 
     private Action currentAction;
+    private BulletEmitter.BulletType currentWeapon;
 
     public void setCurrentAction(Action currentAction) {
         this.currentAction = currentAction;
@@ -15,6 +16,7 @@ public class PlayerTank extends Tank {
 
     public PlayerTank(GameScreen game, Vector2 position) {
         super(game, position);
+        this.currentWeapon = getCurrentWeapon();
     }
 
     @Override
@@ -34,6 +36,11 @@ public class PlayerTank extends Tank {
                 move(1, dt);
             }
 
+            if (currentAction == Action.CHANGE_WEAPON) {
+                currentWeapon = getNextWeapon();
+                currentAction = Action.IDLE;
+            }
+
             if (currentAction == Action.FIRE) {
                 if (power < MINIMAL_POWER) {
                     power = MINIMAL_POWER + 1.0f;
@@ -51,7 +58,7 @@ public class PlayerTank extends Tank {
                     float ammoVelX = power * (float) Math.cos(Math.toRadians(turretAngle));
                     float ammoVelY = power * (float) Math.sin(Math.toRadians(turretAngle));
 
-                    game.getBulletEmitter().setup(BulletEmitter.BulletType.LASER, ammoPosX, ammoPosY, ammoVelX, ammoVelY);
+                    game.getBulletEmitter().setup(currentWeapon, ammoPosX, ammoPosY, ammoVelX, ammoVelY);
 
                     power = 0.0f;
 

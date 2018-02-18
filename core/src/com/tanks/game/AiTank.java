@@ -26,7 +26,9 @@ public class AiTank extends Tank {
             } while (aim == this);
 
             boolean ready = false;
-            BulletEmitter.BulletType currentBulletType = BulletEmitter.BulletType.LIGHT_AMMO;
+            //BulletEmitter.BulletType currentBulletType = BulletEmitter.BulletType.LIGHT_AMMO;
+            //бот случайно выбирает оружие
+            BulletEmitter.BulletType currentBulletType = getIndexWeapon(MathUtils.random(0, weaponType.size() - 1));
             do {
                 tmpPower = MathUtils.random(MINIMAL_POWER, maxPower);
                 tmpAngle = MathUtils.random(0, 180.0f);

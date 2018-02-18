@@ -382,7 +382,7 @@ public class GameScreen implements Screen {
         players = new ArrayList<Tank>();
         gameOver = false;
         paused = false;
-        // players.add(new PlayerTank(this, new Vector2(120, map.getHeightInX(400))));
+        players.add(new PlayerTank(this, new Vector2(120, map.getHeightInX(400))));
         for (int i = 0; i < BOTS_COUNT; i++) {
             Tank tank = new AiTank(this, new Vector2(0, 0));
             players.add(tank);
@@ -434,6 +434,11 @@ public class GameScreen implements Screen {
             public boolean keyUp(int keycode) {
                 if (getCurrentTank() instanceof PlayerTank && keycode == Input.Keys.SPACE) {
                     ((PlayerTank) getCurrentTank()).setCurrentAction(PlayerTank.Action.IDLE);
+                    return true;
+                }
+                //смена оружия у игрока
+                if (getCurrentTank() instanceof PlayerTank && keycode == Input.Keys.P) {
+                    ((PlayerTank) getCurrentTank()).setCurrentAction(PlayerTank.Action.CHANGE_WEAPON);
                     return true;
                 }
                 return false;

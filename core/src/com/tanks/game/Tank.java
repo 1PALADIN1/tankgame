@@ -7,6 +7,10 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public abstract class Tank {
     protected TextureRegion textureBase;
     protected TextureRegion textureTurret;
@@ -31,6 +35,8 @@ public abstract class Tank {
     protected float reddish;
 
     protected StringBuilder tmpStrBuilder = new StringBuilder();
+    protected List<BulletEmitter.BulletType> weaponType;
+    protected int currentWeaponIndex;
 
     public boolean isMakeTurn() {
         return makeTurn;
@@ -81,6 +87,10 @@ public abstract class Tank {
         this.speed = 100.0f;
         this.makeTurn = true;
         this.reddish = 0.0f;
+
+        //массив оружия
+        this.weaponType = Arrays.asList(BulletEmitter.BulletType.values());
+        this.currentWeaponIndex = 0;
     }
 
     public void render(SpriteBatch batch) {
@@ -119,6 +129,12 @@ public abstract class Tank {
         if (power > 100.0f) {
             batch.draw(hudBarBack, position.x, position.y + 104, 80, 24);
             batch.draw(hudBarPower, position.x + 2, position.y + 104, (int) (76 * power / maxPower), 24);
+        }
+
+        if (!makeTurn) {
+            tmpStrBuilder.setLength(0);
+            tmpStrBuilder.append("WEAPON: " + weaponType.get(currentWeaponIndex));
+            font.draw(batch, tmpStrBuilder, 20, ScreenManager.VIEW_HEIGHT - 20);
         }
     }
 
@@ -179,5 +195,22 @@ public abstract class Tank {
 
     public boolean checkOnGround() {
         return checkOnGround(position.x, position.y);
+    }
+
+    public BulletEmitter.BulletType getNextWeapon() {
+        currentWeaponIndex++;
+        if (currentWeaponIndex > weaponType.size() - 1)
+            currentWeaponIndex = 0;
+        return weaponType.get(currentWeaponIndex);
+    }
+
+    public BulletEmitter.BulletType getCurrentWeapon() {
+        return weaponType.get(currentWeaponIndex);
+    }
+
+    //в будущем можно сделать GUI по выбору оружия
+    public BulletEmitter.BulletType getIndexWeapon(int index) {
+        currentWeaponIndex = index;
+        return weaponType.get(currentWeaponIndex);
     }
 }
