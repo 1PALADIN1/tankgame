@@ -116,6 +116,9 @@ public class GameScreen implements Screen {
         TextButton btnExit = new TextButton("EXIT", skin, "tbs");
         TextButton btnRestart = new TextButton("RESTART", skin, "tbs");
         TextButton btnPause = new TextButton("II", skin, "tbs");
+        //переключение оружия на экране
+        TextButton btnNextWeapon = new TextButton(">", skin, "tbs");
+        TextButton btnPrevWeapon = new TextButton("<", skin, "tbs");
 
         btnLeft.setPosition(20, 100);
         btnRight.setPosition(260, 100);
@@ -125,12 +128,16 @@ public class GameScreen implements Screen {
         btnExit.setPosition(1060, 600);
         btnRestart.setPosition(880, 600);
         btnPause.setPosition(700, 600);
+        btnNextWeapon.setPosition(1060, 20);
+        btnPrevWeapon.setPosition(860, 20);
 
         playerJoystick.addActor(btnLeft);
         playerJoystick.addActor(btnRight);
         playerJoystick.addActor(btnUp);
         playerJoystick.addActor(btnDown);
         playerJoystick.addActor(btnFire);
+        playerJoystick.addActor(btnNextWeapon);
+        playerJoystick.addActor(btnPrevWeapon);
 
         stage.addActor(btnExit);
         stage.addActor(btnRestart);
@@ -244,6 +251,39 @@ public class GameScreen implements Screen {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (getCurrentTank() instanceof PlayerTank) {
                     ((PlayerTank) getCurrentTank()).setCurrentAction(PlayerTank.Action.FIRE);
+                }
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (getCurrentTank() instanceof PlayerTank) {
+                    ((PlayerTank) getCurrentTank()).setCurrentAction(PlayerTank.Action.IDLE);
+                }
+            }
+        });
+
+        btnNextWeapon.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (getCurrentTank() instanceof PlayerTank) {
+                    ((PlayerTank) getCurrentTank()).setCurrentAction(PlayerTank.Action.NEXT_WEAPON);
+                }
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (getCurrentTank() instanceof PlayerTank) {
+                    ((PlayerTank) getCurrentTank()).setCurrentAction(PlayerTank.Action.IDLE);
+                }
+            }
+        });
+        btnPrevWeapon.addListener(new ClickListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (getCurrentTank() instanceof PlayerTank) {
+                    ((PlayerTank) getCurrentTank()).setCurrentAction(PlayerTank.Action.PREV_WEAPON);
                 }
                 return true;
             }
