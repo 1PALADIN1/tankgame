@@ -6,14 +6,15 @@ import com.badlogic.gdx.math.Vector2;
 
 public class BulletEmitter extends ObjectPool<Bullet> {
     public enum BulletType {
-        LIGHT_AMMO(ParticleEmitter.BulletEffectType.FIRE, true, true, 32, 5.0f),
-        LASER(ParticleEmitter.BulletEffectType.LASER, false, true, 1, 10.0f);
+        LIGHT_AMMO(ParticleEmitter.BulletEffectType.FIRE, true, true, 32, 5.0f, 40),
+        LASER(ParticleEmitter.BulletEffectType.LASER, false, true, 1, 10.0f, 30);
 
         private ParticleEmitter.BulletEffectType effect;
         private boolean gravity;
         private boolean bouncing;
         private int groundClearingSize;
         private float maxTime;
+        private int damage;
 
         public ParticleEmitter.BulletEffectType getEffect() {
             return effect;
@@ -35,12 +36,17 @@ public class BulletEmitter extends ObjectPool<Bullet> {
             return maxTime;
         }
 
-        BulletType(ParticleEmitter.BulletEffectType effect, boolean gravity, boolean bouncing, int groundClearingSize, float maxTime) {
+        public int getDamage() {
+            return damage;
+        }
+
+        BulletType(ParticleEmitter.BulletEffectType effect, boolean gravity, boolean bouncing, int groundClearingSize, float maxTime, int damage) {
             this.effect = effect;
             this.gravity = gravity;
             this.bouncing = bouncing;
             this.groundClearingSize = groundClearingSize;
             this.maxTime = maxTime;
+            this.damage = damage;
         }
     }
 

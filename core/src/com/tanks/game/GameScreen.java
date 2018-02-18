@@ -286,7 +286,8 @@ public class GameScreen implements Screen {
                 if (b.get(i).isArmed() && players.get(j).getHitArea().contains(b.get(i).getPosition())) {
                     b.get(i).deactivate();
 
-                    if (players.get(j).takeDamage(40)) {
+                    //получение урона
+                    if (players.get(j).takeDamage(b.get(i).getType().getDamage())) {
                         destroyPlayer(players.get(j));
                     }
 
