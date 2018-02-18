@@ -6,9 +6,9 @@ import com.badlogic.gdx.math.Vector2;
 
 public class BulletEmitter extends ObjectPool<Bullet> {
     public enum BulletType {
-        LIGHT_AMMO(ParticleEmitter.BulletEffectType.FIRE, true, true, 32, 5.0f, 40),
-        LASER(ParticleEmitter.BulletEffectType.LASER, false, true, 1, 10.0f, 20),
-        ICE_AMMO(ParticleEmitter.BulletEffectType.ICE_FIRE, true, true, 15, 5.0f, 35);
+        LIGHT_AMMO(ParticleEmitter.BulletEffectType.FIRE, true, true, 32, 5.0f, 40, "FIRE GUN"),
+        LASER(ParticleEmitter.BulletEffectType.LASER, false, true, 1, 10.0f, 20, "LASER"),
+        ICE_AMMO(ParticleEmitter.BulletEffectType.ICE_FIRE, true, true, 15, 5.0f, 35, "ICE GUN");
 
         private ParticleEmitter.BulletEffectType effect;
         private boolean gravity;
@@ -16,6 +16,7 @@ public class BulletEmitter extends ObjectPool<Bullet> {
         private int groundClearingSize;
         private float maxTime;
         private int damage;
+        private String ammoName;
 
         public ParticleEmitter.BulletEffectType getEffect() {
             return effect;
@@ -41,13 +42,18 @@ public class BulletEmitter extends ObjectPool<Bullet> {
             return damage;
         }
 
-        BulletType(ParticleEmitter.BulletEffectType effect, boolean gravity, boolean bouncing, int groundClearingSize, float maxTime, int damage) {
+        public String getAmmoName() {
+            return ammoName;
+        }
+
+        BulletType(ParticleEmitter.BulletEffectType effect, boolean gravity, boolean bouncing, int groundClearingSize, float maxTime, int damage, String ammoName) {
             this.effect = effect;
             this.gravity = gravity;
             this.bouncing = bouncing;
             this.groundClearingSize = groundClearingSize;
             this.maxTime = maxTime;
             this.damage = damage;
+            this.ammoName = ammoName;
         }
     }
 

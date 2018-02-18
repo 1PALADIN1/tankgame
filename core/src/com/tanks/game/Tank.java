@@ -133,7 +133,7 @@ public abstract class Tank {
 
         if (!makeTurn) {
             tmpStrBuilder.setLength(0);
-            tmpStrBuilder.append("WEAPON: " + weaponType.get(currentWeaponIndex));
+            tmpStrBuilder.append("WEAPON: " + weaponType.get(currentWeaponIndex).getAmmoName());
             font.draw(batch, tmpStrBuilder, 20, ScreenManager.VIEW_HEIGHT - 20);
         }
     }
