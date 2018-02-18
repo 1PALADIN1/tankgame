@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class ParticleEmitter extends ObjectPool<Particle> {
     public enum BulletEffectType {
-        NONE, FIRE, SMOKE, LASER, TRACER
+        NONE, FIRE, SMOKE, LASER, TRACER, ICE_FIRE
     }
 
     private TextureRegion particleTexture;
@@ -34,6 +34,11 @@ public class ParticleEmitter extends ObjectPool<Particle> {
             case FIRE:
                 for (int i = 0; i < 1; i++) {
                     setup(x, y, MathUtils.random(-25, 25), MathUtils.random(-25, 25), 0.3f, 1.5f, 0.4f, 1, 0.2f, 0, 1, 1, 1f, 0, 0.5f);
+                }
+                break;
+            case ICE_FIRE:
+                for (int i = 0; i < 1; i++) {
+                    setup(x, y, MathUtils.random(-25, 25), MathUtils.random(-25, 25), 0.3f, 1.5f, 0.4f, 0, 0.2f, 1, 1, 0, 1f, 1, 0.5f);
                 }
                 break;
             case LASER:
