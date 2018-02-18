@@ -439,7 +439,11 @@ public class GameScreen implements Screen {
                 }
                 //смена оружия у игрока
                 if (getCurrentTank() instanceof PlayerTank && keycode == Input.Keys.P) {
-                    ((PlayerTank) getCurrentTank()).setCurrentAction(PlayerTank.Action.CHANGE_WEAPON);
+                    ((PlayerTank) getCurrentTank()).setCurrentAction(PlayerTank.Action.NEXT_WEAPON);
+                    return true;
+                }
+                if (getCurrentTank() instanceof PlayerTank && keycode == Input.Keys.O) {
+                    ((PlayerTank) getCurrentTank()).setCurrentAction(PlayerTank.Action.PREV_WEAPON);
                     return true;
                 }
                 return false;

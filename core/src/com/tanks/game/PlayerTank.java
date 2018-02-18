@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class PlayerTank extends Tank {
     public enum Action {
-        IDLE, MOVE_LEFT, MOVE_RIGHT, TURRET_UP, TURRET_DOWN, FIRE, CHANGE_WEAPON
+        IDLE, MOVE_LEFT, MOVE_RIGHT, TURRET_UP, TURRET_DOWN, FIRE, NEXT_WEAPON, PREV_WEAPON
     }
 
     private Action currentAction;
@@ -36,8 +36,12 @@ public class PlayerTank extends Tank {
                 move(1, dt);
             }
 
-            if (currentAction == Action.CHANGE_WEAPON) {
+            if (currentAction == Action.NEXT_WEAPON) {
                 currentWeapon = getNextWeapon();
+                currentAction = Action.IDLE;
+            }
+            if (currentAction == Action.PREV_WEAPON) {
+                currentWeapon = getPreviousWeapon();
                 currentAction = Action.IDLE;
             }
 

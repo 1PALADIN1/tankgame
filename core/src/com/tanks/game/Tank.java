@@ -197,10 +197,19 @@ public abstract class Tank {
         return checkOnGround(position.x, position.y);
     }
 
+    //следующее в массиве оружие
     public BulletEmitter.BulletType getNextWeapon() {
         currentWeaponIndex++;
         if (currentWeaponIndex > weaponType.size() - 1)
             currentWeaponIndex = 0;
+        return weaponType.get(currentWeaponIndex);
+    }
+
+    //предыдущее оружие
+    public BulletEmitter.BulletType getPreviousWeapon() {
+        currentWeaponIndex--;
+        if (currentWeaponIndex < 0)
+            currentWeaponIndex = weaponType.size() - 1;
         return weaponType.get(currentWeaponIndex);
     }
 
