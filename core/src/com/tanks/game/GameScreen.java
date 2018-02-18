@@ -338,6 +338,10 @@ public class GameScreen implements Screen {
                     ((PlayerTank) getCurrentTank()).setCurrentAction(PlayerTank.Action.IDLE);
                     return true;
                 }
+                if (getCurrentTank() instanceof PlayerTank && keycode == Input.Keys.P) {
+                    ((PlayerTank) getCurrentTank()).setCurrentAction(PlayerTank.Action.CHANGE_WEAPON);
+                    return true;
+                }
                 return false;
             }
 

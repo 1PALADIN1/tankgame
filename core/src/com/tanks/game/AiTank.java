@@ -13,6 +13,7 @@ public class AiTank extends Tank {
 
     public AiTank(GameScreen game, Vector2 position) {
         super(game, position);
+        weapon = new Weapon(WeaponType.ROCKET);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class AiTank extends Tank {
                 float ammoVelX = tmpPower * (float) Math.cos(Math.toRadians(tmpAngle));
                 float ammoVelY = tmpPower * (float) Math.sin(Math.toRadians(tmpAngle));
 
-                Bullet tmpBullet = game.getBulletEmitter().setup(ammoPosX, ammoPosY, ammoVelX, ammoVelY, true, true);
+                Bullet tmpBullet = game.getBulletEmitter().setup(ammoPosX, ammoPosY, ammoVelX, ammoVelY, weapon.isGravity(), weapon.isBouncing());
 
                 do {
                     ready = game.traceCollision(aim, tmpBullet, dt);

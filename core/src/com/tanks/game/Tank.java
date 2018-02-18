@@ -33,6 +33,7 @@ public abstract class Tank {
     protected float fuel;
     protected float time;
     protected float reddish;
+    protected Weapon weapon;
 
     public boolean isMakeTurn() {
         return makeTurn;
@@ -79,6 +80,7 @@ public abstract class Tank {
         this.speed = 100.0f;
         this.makeTurn = true;
         this.reddish = 0.0f;
+        this.weapon = new Weapon(WeaponType.LASER);
     }
 
     public void render(SpriteBatch batch) {
@@ -115,6 +117,8 @@ public abstract class Tank {
             batch.draw(hudBarBack, position.x + 2, position.y + 104, 80, 24);
             batch.draw(hudBarPower, position.x + 2, position.y + 104, (int) (80 * power / maxPower), 24);
         }
+
+        font.draw(batch, weapon.getWeaponType(), position.x,position.y + 150, 85, 1, false);
     }
 
     public void rotateTurret(int n, float dt) {
