@@ -1,9 +1,5 @@
 package com.tanks.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -33,10 +29,15 @@ public abstract class Tank {
     protected float fuel;
     protected float time;
     protected float reddish;
-    protected Weapon weapon;
+
+    protected StringBuilder tmpStrBuilder = new StringBuilder();
 
     public boolean isMakeTurn() {
         return makeTurn;
+    }
+
+    public Vector2 getPosition() {
+        return position;
     }
 
     public void setMakeTurn(boolean makeTurn) {
@@ -74,13 +75,12 @@ public abstract class Tank {
         this.turretAngle = 0.0f;
         this.maxHp = 100;
         this.hp = this.maxHp;
-        this.hitArea = new Circle(new Vector2(0, 0), textureBase.getRegionWidth() * 0.4f);
+        this.hitArea = new Circle(position, textureBase.getRegionWidth() * 0.4f);
         this.power = 0.0f;
         this.maxPower = 1200.0f;
         this.speed = 100.0f;
         this.makeTurn = true;
         this.reddish = 0.0f;
-        this.weapon = new Weapon(WeaponType.LASER);
     }
 
     public void render(SpriteBatch batch) {
@@ -99,26 +99,27 @@ public abstract class Tank {
 
         batch.draw(textureTurret, weaponPosition.x, weaponPosition.y + t, textureTurret.getRegionWidth() / 10, textureTurret.getRegionHeight() / 2, textureTurret.getRegionWidth(), textureTurret.getRegionHeight(), 1, 1, turretAngle);
         batch.draw(textureTrack, position.x + 4, position.y);
-
         batch.draw(textureBase, position.x, position.y + textureTrack.getRegionHeight() / 3 + t);
+
+
         batch.setColor(1, 1, 1, 1);
     }
 
     public void renderHUD(SpriteBatch batch, BitmapFont font) {
         //batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        batch.draw(hudBarBack, position.x + 2, position.y + 80, 80, 24);
-        batch.draw(hudBarHp, position.x + 2, position.y + 80, (int) (80 * (float) hp / maxHp), 24);
+        batch.draw(hudBarBack, position.x, position.y + 80, 80, 24);
+        batch.draw(hudBarHp, position.x + 2, position.y + 80, (int) (76 * (float) hp / maxHp), 24);
 
         //batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
         //batch.draw(hudBarHp, position.x + 2 + MathUtils.random(-reddish * 3, reddish * 3), position.y + 70 + MathUtils.random(-reddish * 3, reddish * 3), (int) (80 * (float) hp / maxHp), 24);
         //batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        font.draw(batch, "" + hp, position.x, position.y + 100, 85, 1, false);
+        tmpStrBuilder.setLength(0);
+        tmpStrBuilder.append(hp);
+        font.draw(batch, tmpStrBuilder, position.x, position.y + 100, 85, 1, false);
         if (power > 100.0f) {
-            batch.draw(hudBarBack, position.x + 2, position.y + 104, 80, 24);
-            batch.draw(hudBarPower, position.x + 2, position.y + 104, (int) (80 * power / maxPower), 24);
+            batch.draw(hudBarBack, position.x, position.y + 104, 80, 24);
+            batch.draw(hudBarPower, position.x + 2, position.y + 104, (int) (76 * power / maxPower), 24);
         }
-
-        font.draw(batch, weapon.getWeaponType(), position.x,position.y + 150, 85, 1, false);
     }
 
     public void rotateTurret(int n, float dt) {
@@ -136,6 +137,9 @@ public abstract class Tank {
                 }
             }
             fuel -= dt;
+            for (int i = 0; i < textureBase.getRegionWidth(); i += 8) {
+                game.getParticleEmitter().setup(position.x + i, position.y, MathUtils.random(60, 120) * -n, MathUtils.random(0, 40), 0.25f, 2, 2, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.1f);
+            }
         }
     }
 
@@ -157,6 +161,7 @@ public abstract class Tank {
     public boolean takeDamage(int dmg) {
         hp -= dmg;
         reddish += 1.0f;
+        game.getInfoSystem().addMessage("-" + dmg, position.x + 20, position.y + 100, FlyingText.Colors.RED);
         if (hp <= 0) {
             return true;
         }
@@ -164,8 +169,8 @@ public abstract class Tank {
     }
 
     public boolean checkOnGround(float x, float y) {
-        for (int i = 0; i < textureBase.getRegionWidth(); i += 2) {
-            if (game.getMap().isGround(x + i, y)) {
+        for (int i = 10; i < textureBase.getRegionWidth() - 10; i += 2) {
+            if (game.getMap().isGround(x + i, y + 10)) {
                 return true;
             }
         }

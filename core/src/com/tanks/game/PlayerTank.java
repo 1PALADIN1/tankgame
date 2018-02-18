@@ -1,12 +1,10 @@
 package com.tanks.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
 public class PlayerTank extends Tank {
     public enum Action {
-        IDLE, MOVE_LEFT, MOVE_RIGHT, TURRET_UP, TURRET_DOWN, FIRE, CHANGE_WEAPON
+        IDLE, MOVE_LEFT, MOVE_RIGHT, TURRET_UP, TURRET_DOWN, FIRE
     }
 
     private Action currentAction;
@@ -36,12 +34,6 @@ public class PlayerTank extends Tank {
                 move(1, dt);
             }
 
-            //переключение на следующее оружие
-            if (currentAction == Action.CHANGE_WEAPON) {
-                weapon.setup(weapon.getNextWeapon());
-                currentAction = Action.IDLE;
-            }
-
             if (currentAction == Action.FIRE) {
                 if (power < MINIMAL_POWER) {
                     power = MINIMAL_POWER + 1.0f;
@@ -53,13 +45,13 @@ public class PlayerTank extends Tank {
                 }
             } else {
                 if (power > MINIMAL_POWER) {
-                    float ammoPosX = weaponPosition.x + 12 + 28 * (float) Math.cos(Math.toRadians(turretAngle));
-                    float ammoPosY = weaponPosition.y + 16 + 28 * (float) Math.sin(Math.toRadians(turretAngle));
+                    float ammoPosX = weaponPosition.x + 4 + 28 * (float) Math.cos(Math.toRadians(turretAngle));
+                    float ammoPosY = weaponPosition.y + 6 + 28 * (float) Math.sin(Math.toRadians(turretAngle));
 
                     float ammoVelX = power * (float) Math.cos(Math.toRadians(turretAngle));
                     float ammoVelY = power * (float) Math.sin(Math.toRadians(turretAngle));
 
-                    game.getBulletEmitter().setup(ammoPosX, ammoPosY, ammoVelX, ammoVelY, weapon.isGravity(), weapon.isBouncing());
+                    game.getBulletEmitter().setup(BulletEmitter.BulletType.LASER, ammoPosX, ammoPosY, ammoVelX, ammoVelY);
 
                     power = 0.0f;
 

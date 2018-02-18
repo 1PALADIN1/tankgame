@@ -1,11 +1,16 @@
 package com.tanks.game;
 
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 
 public class ParticleEmitter extends ObjectPool<Particle> {
+    public enum BulletEffectType {
+        NONE, FIRE, SMOKE, LASER, TRACER
+    }
+
     private TextureRegion particleTexture;
 
     public ParticleEmitter() {
@@ -22,13 +27,46 @@ public class ParticleEmitter extends ObjectPool<Particle> {
         item.init(x, y, vx, vy, duration, size1, size2, r1, g1, b1, a1, r2, g2, b2, a2);
     }
 
+    public void makeBulletEffect(BulletEffectType type, float x, float y) {
+        switch (type) {
+            case NONE:
+                return;
+            case FIRE:
+                for (int i = 0; i < 1; i++) {
+                    setup(x, y, MathUtils.random(-25, 25), MathUtils.random(-25, 25), 0.3f, 1.5f, 0.4f, 1, 0.2f, 0, 1, 1, 1f, 0, 0.5f);
+                }
+                break;
+            case LASER:
+                for (int i = 0; i < 1; i++) {
+                    setup(x, y, 0, 0, 1.0f, 0.3f, 0.1f, 1, 0f, 0, 1, 0.5f, 0f, 0, 1f);
+                }
+                break;
+            case TRACER:
+                for (int i = 0; i < 1; i++) {
+                    setup(x, y, 0, 0, 3.0f, 0.1f, 0.1f, 0.5f, 0.5f, 0.5f, 1, 0.5f, 0.5f, 0.5f, 1f);
+                }
+                break;
+        }
+    }
+
+    Vector2 v2tmp = new Vector2(0, 0);
+
+    public void makeExplosion(float x, float y) {
+        for (int k = 0; k < 120; k++) {
+            v2tmp.set(MathUtils.random(-1f, 1f), MathUtils.random(-1f, 1f));
+            v2tmp.nor();
+            v2tmp.scl(MathUtils.random(50f, 120f));
+            setup(x, y, v2tmp.x, v2tmp.y, 1.0f, 1.8f, 3.5f, 1, 0, 0, 1, 1, 0.6f, 0, 1);
+        }
+    }
+
     public void render(SpriteBatch batch) {
         batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         for (int i = 0; i < activeList.size(); i++) {
             Particle o = activeList.get(i);
             float t = o.getTime() / o.getDuration();
             float scale = lerp(o.getSize1(), o.getSize2(), t);
-            if(Math.random() < 0.04) {
+            if (Math.random() < 0.04) {
                 scale *= 2.0f;
             }
             batch.setColor(lerp(o.getR1(), o.getR2(), t), lerp(o.getG1(), o.getG2(), t), lerp(o.getB1(), o.getB2(), t), lerp(o.getA1(), o.getA2(), t));
@@ -40,7 +78,7 @@ public class ParticleEmitter extends ObjectPool<Particle> {
             Particle o = activeList.get(i);
             float t = o.getTime() / o.getDuration();
             float scale = lerp(o.getSize1(), o.getSize2(), t);
-            if(Math.random() < 0.04) {
+            if (Math.random() < 0.04) {
                 scale *= 2.0f;
             }
             batch.setColor(lerp(o.getR1(), o.getR2(), t), lerp(o.getG1(), o.getG2(), t), lerp(o.getB1(), o.getB2(), t), lerp(o.getA1(), o.getA2(), t));
